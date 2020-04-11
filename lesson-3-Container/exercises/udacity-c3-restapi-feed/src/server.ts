@@ -6,6 +6,7 @@ import { IndexRouter } from './controllers/v0/index.router';
 import bodyParser from 'body-parser';
 
 import { V0MODELS } from './controllers/v0/model.index';
+import cors from "cors";
 
 (async () => {
   await sequelize.addModels(V0MODELS);
@@ -15,14 +16,22 @@ import { V0MODELS } from './controllers/v0/model.index';
   const port = process.env.PORT || 8080; // default port to listen
   
   app.use(bodyParser.json());
+  app.use((req, res, next) => {
+    res.set('Access-Control-Allow-Origin', '*')
+    next()
+  })
+  const corsOptions:cors.CorsOptions = {
+    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+    methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+    preflightContinue: false
 
+  };
+
+  app.use(cors(corsOptions));
+
+  app.options("*",cors(corsOptions))
+  
   //CORS Should be restricted
-  app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8100");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-  });
-
   app.use('/api/v0/', IndexRouter)
 
   // Root URI call

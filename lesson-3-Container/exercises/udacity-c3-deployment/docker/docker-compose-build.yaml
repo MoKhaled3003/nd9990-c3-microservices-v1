@@ -1,0 +1,20 @@
+version: "2"
+services:
+ reverseproxy:
+ build:
+ context: .
+ image: mokhaled3003/reverseproxy 
+ backend_user:
+ build:
+ context: ../../udacity-c3-restapi-user
+ image: mokhaled3003/udacity-restapi-user
+ backend_feed:
+ build:
+ context: ../../udacity-c3-restapi-feed 
+ image: mokhaled3003/udacity-restapi-feed
+ frontend:
+ build:
+ context: ../../udacity-c3-frontend
+  args:
+        - BUILD_ENV=development 
+ image: mokhaled3003/udacity-frontend:local
